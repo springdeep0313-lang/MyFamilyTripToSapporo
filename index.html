@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우리 가족 삿포로 여행</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday family trip: cheerful, kid-friendly, but every time and fare usable on the day
+   IDEA a family travel pass: six travellers, one snow-line route, stamped day by day
+   PICTURE hero: six bundled-up family members walking in falling snow under the red north star; then a metro-style route line of the six days
+   COLOUR Sapporo red-star field, snow white, ice blue support, near-black ink
+   TYPE Black Han Sans for titles + Noto Sans KR for reading
+   LAYOUT laptop: title and countdown left over wide family scene, route line full width; phone: title, scene, countdown, route stacked vertically */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#10141b);--ink:light-dark(#141a24,#eef2f7);--soft:light-dark(#596475,#a8b3c3);--red:#d7263d;--redInk:light-dark(#c01f35,#ff6b7d);--ice:light-dark(#e8f4fc,#18222e);--line:light-dark(#dde6ef,#273342);--card:light-dark(#f7fafd,#151c26)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:64px;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip;word-break:keep-all}
+h1,h2,h3{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-weight:400;line-height:1.12;letter-spacing:-.005em;margin:0}
+h1{font-size:clamp(34px,5.6vw,56px);text-wrap:balance}
+h2{font-size:clamp(26px,3.4vw,36px);text-wrap:balance;margin-bottom:8px}
+h3{font-size:21px}
+p{margin:.4em 0}
+a{color:inherit}
+.band{padding-block:clamp(30px,4.5vw,64px);padding-inline:max(5vw,16px)}
+.wrap{max-width:1180px;margin:0 auto}
+.lead{font-size:17px;color:var(--soft);max-width:46em}
+.hero{background:var(--red);color:#fff;padding:0;overflow:hidden}
+.hero .grid{max-width:1240px;margin:0 auto;padding:clamp(28px,4vw,56px) max(5vw,16px) 0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px 32px;align-items:end}
+.hero p{color:#ffe3e6;font-size:17px;max-width:34em;margin-top:12px}
+.who{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.who span{background:#ffffff22;border:1px solid #ffffff44;border-radius:999px;padding:6px 14px;font-weight:700;white-space:nowrap}
+.dday{background:#fff;color:#141a24;border-radius:22px;padding:16px 22px;text-align:center;min-width:12em}
+.dday b{display:block;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:clamp(40px,6vw,60px);line-height:1;color:var(--red)}
+.dday small{font-size:14px;color:#596475}
+.scene{display:block;width:100%;height:clamp(210px,28vw,320px)}
+.toc{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:4px;overflow-x:auto;padding:8px max(5vw,16px);scrollbar-width:none}
+.toc a{flex:none;text-decoration:none;padding:8px 14px;border-radius:999px;font-weight:500;min-height:40px;display:flex;align-items:center;white-space:nowrap}
+.toc a:hover,.toc a:focus-visible{background:var(--ice);outline:none}
+.route{position:relative;margin-top:22px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0}
+.route::before{content:"";position:absolute;left:8.33%;right:8.33%;top:27px;height:10px;border-radius:9px;background:var(--red)}
+.stop{position:relative;text-align:center;padding:0 6px;background:none;border:0;font:inherit;color:inherit;cursor:pointer;min-height:44px}
+.stop .dot{display:grid;place-items:center;width:64px;height:64px;margin:0 auto;border-radius:50%;background:var(--bg);border:8px solid var(--red);font-family:"Black Han Sans",sans-serif;font-size:20px;position:relative}
+.stop[aria-selected=true] .dot{background:var(--red);color:#fff}
+.stop b{display:block;margin-top:8px;font-size:16px;line-height:1.3}
+.stop small{display:block;color:var(--soft);font-size:13.5px;line-height:1.35}
+.stop:focus-visible{outline:3px solid var(--redInk);outline-offset:4px;border-radius:12px}
+.day{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:24px;align-items:start;margin-top:26px}
+.sched{list-style:none;margin:0;padding:0}
+.sched li{display:grid;grid-template-columns:5.2em minmax(0,1fr);gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.sched .t{font-family:"Black Han Sans",sans-serif;font-size:22px;line-height:1.15;color:var(--redInk);white-space:nowrap}
+.sched b{display:block;font-size:17px}
+.sched p{margin:2px 0 0;color:var(--soft);font-size:15px}
+.side{background:var(--ice);border-radius:20px;padding:18px 20px}
+.side h3{margin-bottom:6px}
+.side ul{margin:6px 0 0;padding-left:1.1em}
+.side li{margin:5px 0}
+.side .cost{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.side .cost b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:26px;color:var(--redInk);white-space:nowrap}
+.wx{display:grid;grid-template-columns:repeat(auto-fit,minmax(10em,1fr));gap:12px;margin-top:18px}
+.wx div{border:1px solid var(--line);border-radius:18px;padding:14px 16px;background:var(--card)}
+.wx .v{font-family:"Black Han Sans",sans-serif;font-size:clamp(28px,3.6vw,38px);line-height:1.1;white-space:nowrap}
+.wx .v.c{color:#2f7fd0}
+.wx small{display:block;color:var(--soft);font-size:14px}
+.cal{margin-top:22px;border:1px solid var(--line);border-radius:20px;padding:16px;background:var(--card);--lab:11em}
+.days,.row{display:grid;grid-template-columns:var(--lab) minmax(0,1fr)}
+.dnums{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));font-size:13px;text-align:center}
+.dnums span{padding:4px 0;color:var(--soft)}
+.dnums span.trip{color:var(--ink);font-weight:700}
+.dnums span.we{color:var(--redInk)}
+.dnums span small{display:block;font-size:12px;font-weight:400}
+.row{align-items:center;padding:6px 0;border-top:1px dashed var(--line)}
+.row .nm{font-weight:700;font-size:14.5px;padding-right:10px;line-height:1.3}
+.row .nm small{display:block;font-weight:400;color:var(--soft);font-size:13px}
+.track{position:relative;height:28px}
+.track .win{position:absolute;top:-6px;bottom:-6px;background:color-mix(in srgb,var(--red) 10%,transparent);left:20%;width:60%}
+.track i{position:absolute;top:4px;bottom:4px;border-radius:8px;display:flex;align-items:center;padding:0 8px;color:#fff;font-size:12.5px;font-style:normal;white-space:nowrap;overflow:hidden}
+.legend{font-size:14px;color:var(--soft);margin-top:10px}
+.miss{display:grid;grid-template-columns:repeat(auto-fit,minmax(16em,1fr));gap:12px;margin-top:14px}
+.miss div{border-left:4px solid var(--soft);padding:6px 14px}
+.tbl{overflow-x:auto;margin-top:14px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--ice);font-weight:700}
+td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+tfoot td{font-weight:700;border-bottom:0}
+tfoot td.n{font-size:20px;color:var(--redInk)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(15em,1fr));gap:12px;margin-top:14px}
+.cards div{border:1px solid var(--line);border-radius:18px;padding:16px;background:var(--bg)}
+.cards b{display:block;font-size:17px;margin-bottom:2px}
+.cards .big{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:21px}
+.cards small{color:var(--soft);font-size:14.5px}
+.alt{background:var(--ice)}
+.alt .side{background:var(--bg)}
+.ptabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.ptab{font:inherit;font-weight:700;border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:7px 14px;min-height:44px;cursor:pointer}
+.ptab[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.ptab:focus-visible{outline:3px solid var(--redInk);outline-offset:2px}
+.chk{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.chk label{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:14px;cursor:pointer;min-height:44px;background:var(--bg)}
+.chk input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:var(--red)}
+.chk input:checked+span{text-decoration:line-through;color:var(--soft)}
+.prog{display:flex;align-items:center;gap:12px;margin:6px 0 12px}
+.prog .bar{flex:1;height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:var(--red);transition:width .3s}
+.prog span{font-weight:700;white-space:nowrap}
+footer{background:#141a24;color:#cfd7e2;font-size:14px}
+footer a{color:#fff}
+footer h3{color:#fff;margin-bottom:8px}
+footer ul{padding-left:1.1em;margin:6px 0}
+@media(max-width:820px){.day,.two{grid-template-columns:minmax(0,1fr)}.hero .grid{grid-template-columns:minmax(0,1fr)}.dday{justify-self:start;display:flex;gap:12px;align-items:baseline;text-align:left}}
+@media(max-width:640px){
+ .route{grid-template-columns:minmax(0,1fr);gap:4px}
+ .route::before{left:31px;right:auto;top:30px;bottom:30px;width:10px;height:auto}
+ .stop{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;text-align:left;align-items:center;padding:4px 0}
+ .stop b{margin-top:0}
+ .cal{--lab:6.4em;padding:12px 8px}
+ .row .nm small{display:none}
+ .track i{font-size:0;padding:0}
+ .sched li{grid-template-columns:4.4em minmax(0,1fr)}
+ .sched .t{font-size:19px}
+ table{font-size:13px}th,td{padding:8px 6px}
+}
+@media(prefers-reduced-motion:no-preference){.flake{animation:fall linear infinite}}
+@keyframes fall{from{transform:translateY(-30px)}to{transform:translateY(360px)}}
+</style>
+<style>
+.flag{display:block;margin-top:6px;padding:8px 12px;border-radius:10px;background:color-mix(in srgb,var(--red) 10%,transparent);color:var(--ink);font-size:14.5px}
+.flag::before{content:"확인 ";font-weight:700;color:var(--redInk)}
+.stay{display:grid;grid-template-columns:repeat(auto-fit,minmax(16em,1fr));gap:12px;margin-top:14px}
+.stay div{border:1px solid var(--line);border-radius:18px;padding:16px;background:var(--bg)}
+.stay .nights{font-family:"Black Han Sans",sans-serif;font-size:28px;color:var(--redInk);line-height:1.1}
+.cnt{display:flex;flex-wrap:wrap;gap:14px;margin:12px 0 4px}
+.cnt label{display:flex;align-items:center;gap:8px;font-weight:700}
+.cnt input{width:4.2em;font:inherit;font-size:16px;padding:8px 10px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);min-height:44px}
+.cnt input:focus-visible{outline:3px solid var(--redInk);outline-offset:1px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="grid">
+    <div>
+      <h1>우리 가족 홋카이도 5박 6일</h1>
+      <p>2027년 1월 11일(월)부터 16일(토)까지. 공항에서 두 팀이 만나 스스키노에서 4박을 하고, 비에이 설원과 오타루 운하를 거쳐 노보리베츠 온천에서 마무리해요.</p>
+      <div class="who"><span>현주님 팀 2명 · 국내선</span><span>가족 5명 · 국제선</span></div>
+    </div>
+    <div class="dday"><small>출발까지</small><b id="dday">D-45</b><small>2027.1.11(월)</small></div>
+  </div>
+  <svg class="scene" id="scene" viewBox="0 0 1200 320" preserveAspectRatio="xMidYMax slice" role="img" aria-label="눈 내리는 길을 함께 걷는 가족"></svg>
+</header>
+
+<nav class="toc" aria-label="목차">
+  <a href="#plan">일정</a><a href="#stay">숙소</a><a href="#weather">날씨·행사</a><a href="#cost">요금</a><a href="#family">함께 챙길 것</a><a href="#food">먹거리</a><a href="#pack">준비물</a><a href="#safe">안전</a>
+</nav>
+
+<section class="band" id="plan">
+  <div class="wrap">
+    <h2>6일간의 눈길 노선도</h2>
+    <p class="lead">역을 누르면 그날 일정이 나와요. 빨간 상자는 현지 운영 정보와 맞춰 보니 한 번 더 확인하면 좋은 부분이에요.</p>
+    <div class="route" role="tablist" id="route"></div>
+    <div class="day" id="day"></div>
+  </div>
+</section>
+
+<section class="band alt" id="stay">
+  <div class="wrap">
+    <h2>숙소</h2>
+    <div class="stay">
+      <div><span class="nights">4박</span><br><b>스스키노 숙소</b> · 1/11(월)~1/15(금)<br><small>2층 무료 대욕장과 핀란드식 사우나. 니카 간판, 다누키코지 상점가, 라멘 골목이 걸어서 가까워요.</small></div>
+      <div><span class="nights">1박</span><br><b>노보리베츠 온천 료칸</b> · 1/15(금)~1/16(토)<br><small>유황 온천, 가이세키 또는 뷔페 석식. 송영버스 여부와 시간을 예약할 때 확인하세요.</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="weather">
+  <div class="wrap">
+    <h2>이 기간 날씨와 행사</h2>
+    <p class="lead">1월 중순은 홋카이도가 가장 추운 때예요. 삿포로 평년값은 낮에도 영하이고, 내륙인 비에이는 이보다 훨씬 추워요.</p>
+    <div class="wx">
+      <div><small>삿포로 낮 최고(평년)</small><span class="v">약 −1℃</span></div>
+      <div><small>삿포로 밤 최저(평년)</small><span class="v c">약 −6℃</span></div>
+      <div><small>해 지는 시각</small><span class="v">16:20 무렵</span></div>
+      <div><small>비에이 투어 날</small><span class="v c">영하 10℃ 이하</span><small>가장 두껍게 입는 날</small></div>
+    </div>
+    <div class="cal">
+      <div class="days"><span></span><div class="dnums" id="dnums"></div></div>
+      <div id="rows"></div>
+    </div>
+    <p class="legend">분홍 칸이 여행 기간이에요. 11일(월)은 일본 공휴일(성인의 날)이라 공항과 시내가 붐빌 수 있어요.</p>
+    <div class="miss">
+      <div><b>오도리 공원 일루미네이션은 끝나요</b><br>오도리 공원 행사장은 12/25까지예요. 1월엔 바로 옆 역 앞 거리와 남1조 거리, 아카프라에 불이 켜져요.</div>
+      <div><b>여행 기간엔 없어요</b><br>삿포로 눈축제 2/4~2/11, 오타루 눈빛거리 축제 2/6~2/13</div>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="cost">
+  <div class="wrap two">
+    <div>
+      <h2>입장료·교통비 계산</h2>
+      <p class="lead">일본은 대부분 <b>중학생부터 어른 요금</b>이에요. 인원을 바꾸면 합계가 바로 바뀌어요.</p>
+      <div class="cnt">
+        <label for="nA">어른 요금 <input type="number" id="nA" min="0" max="20" value="5"></label>
+        <label for="nC">초등학생 <input type="number" id="nC" min="0" max="20" value="2"></label>
+      </div>
+      <p class="legend">비에이 버스 투어, 노보리베츠 고속버스, 료칸 요금은 예약한 상품마다 달라서 빠져 있어요.</p>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>항목</th><th class="n">어른</th><th class="n">어린이</th><th class="n">합계(엔)</th></tr></thead>
+      <tbody id="costRows"></tbody>
+      <tfoot><tr><td>확인된 항목 합계</td><td></td><td></td><td class="n" id="costSum"></td></tr></tfoot>
+    </table></div>
+  </div>
+</section>
+
+<section class="band" id="family">
+  <div class="wrap">
+    <h2>함께 챙길 것</h2>
+    <div class="cards" id="famCards"></div>
+  </div>
+</section>
+
+<section class="band alt" id="food">
+  <div class="wrap">
+    <h2>이번 일정에서 먹을 것들</h2>
+    <div class="cards" id="foodCards"></div>
+  </div>
+</section>
+
+<section class="band" id="pack">
+  <div class="wrap two">
+    <div>
+      <h2>준비물 체크리스트</h2>
+      <p class="lead">사람별로 나눠 두었어요. 체크한 항목은 이 기기에 저장돼요.</p>
+      <div class="ptabs" role="tablist" id="ptabs"></div>
+      <div class="prog"><div class="bar"><i id="bar"></i></div><span id="cnt"></span></div>
+    </div>
+    <ul class="chk" id="chk"></ul>
+  </div>
+</section>
+
+<section class="band alt" id="safe">
+  <div class="wrap">
+    <h2>눈길 안전 수칙</h2>
+    <div class="cards" id="safeCards"></div>
+  </div>
+</section>
+
+<footer class="band">
+  <div class="wrap">
+    <h3>출발 전 다시 확인하기</h3>
+    <p>운영 시간과 요금은 2026년 11월에 확인한 정보예요. 눈이 많이 오면 투어, 열차, 버스 운행이 바뀔 수 있으니 전날 저녁과 당일 아침에 확인하세요.</p>
+    <ul>
+      <li><a href="https://www.sapporo.travel">삿포로 관광협회</a> — 일루미네이션·행사</li>
+      <li><a href="https://bearpark.jp">노보리베츠 곰 목장</a> — 운영 시간·요금</li>
+      <li><a href="https://www.noboribetsu-spa.jp">노보리베츠 관광협회</a> — 지옥계곡·온천 정보</li>
+      <li><a href="https://www.hokkaido-airports.com/ja/new-chitose/access/bus/">신치토세 공항 버스 안내</a> — 노보리베츠·시내 버스 시각표</li>
+      <li><a href="https://www.jrhokkaido.co.jp">JR 홋카이도</a> — 대설 운행 정보</li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+{
+const $=id=>document.getElementById(id);
+
+{const t=new Date(2027,0,11),n=new Date();n.setHours(0,0,0,0);const d=Math.round((t-n)/864e5);$('dday').textContent=d>0?'D-'+d:d===0?'D-DAY':'즐거운 여행!';}
+
+/* hero scene */
+{
+  let s=`<rect width="1200" height="320" fill="#d7263d"/>
+  <path d="M0 210 Q300 160 620 196 T1200 180 V320 H0Z" fill="#b81d31"/>
+  <g transform="translate(1040 70)"><path d="M0-34 9-11 34-11 14 4 21 28 0 14-21 28-14 4-34-11-9-11Z" fill="#fff" opacity=".9"/></g>
+  <path d="M0 262 Q600 236 1200 262 V320 H0Z" fill="#f6f9fc"/><path d="M0 284 Q600 266 1200 286 V320 H0Z" fill="#e1ebf4"/>`;
+  const P=[[340,148,'#1f3b63','#f2c14e','#ffffff'],[420,140,'#2d6a4f','#ffffff','#f2c14e'],[540,150,'#141a24','#d7263d','#8fc7ee'],[625,142,'#6b4f3a','#ffffff','#d7263d'],[705,124,'#5b3fa0','#8fc7ee','#ffffff'],[775,98,'#f28c28','#1f3b63','#ffffff'],[835,90,'#2f7fd0','#f2c14e','#d7263d']];
+  P.forEach(p=>{const [x,h,c,hat,sc]=p,g=272,head=h*.16,by=g-h;
+    s+=`<g><ellipse cx="${x+8}" cy="${g+4}" rx="${h*.22}" ry="6" fill="#141a24" opacity=".15"/>
+    <rect x="${x-h*.07}" y="${g-h*.28}" width="${h*.06}" height="${h*.28}" rx="3" fill="#141a24"/><rect x="${x+h*.02}" y="${g-h*.28}" width="${h*.06}" height="${h*.28}" rx="3" fill="#141a24"/>
+    <path d="M${x-h*.17} ${g-h*.26} Q${x-h*.19} ${by+head*2} ${x} ${by+head*1.9} Q${x+h*.19} ${by+head*2} ${x+h*.17} ${g-h*.26}Z" fill="${c}"/>
+    <path d="M${x} ${by+head*1.9} Q${x+h*.19} ${by+head*2} ${x+h*.17} ${g-h*.26} L${x} ${g-h*.26}Z" fill="#000" opacity=".12"/>
+    <rect x="${x-h*.13}" y="${by+head*1.75}" width="${h*.26}" height="${h*.07}" rx="${h*.03}" fill="${sc}"/>
+    <circle cx="${x}" cy="${by+head}" r="${head}" fill="#f6d2b8"/>
+    <path d="M${x-head} ${by+head*.9} A${head} ${head} 0 0 1 ${x+head} ${by+head*.9}Z" fill="${hat}"/>
+    <circle cx="${x}" cy="${by-head*.05}" r="${head*.32}" fill="${hat}"/>
+    <circle cx="${x+head*.38}" cy="${by+head*1.15}" r="${head*.16}" fill="#f29a9a" opacity=".8"/></g>`;});
+  /* steam from onsen on the right */
+  s+=`<g transform="translate(1010 0)"><ellipse cx="0" cy="268" rx="70" ry="14" fill="#8fc7ee"/><path d="M-30 252q-10-16 0-32t0-32M0 250q-10-16 0-32t0-32M30 252q-10-16 0-32t0-32" stroke="#fff" stroke-width="5" fill="none" opacity=".7"/></g>`;
+  s+=`<g transform="translate(200 0)"><circle cx="0" cy="250" r="30" fill="#fff"/><circle cx="0" cy="204" r="21" fill="#fff"/><path d="M0 204l14 4-14 3z" fill="#f28c28"/><circle cx="-6" cy="198" r="2.5" fill="#141a24"/><circle cx="6" cy="198" r="2.5" fill="#141a24"/><rect x="-16" y="178" width="32" height="8" fill="#141a24"/><rect x="-10" y="160" width="20" height="20" fill="#141a24"/></g>`;
+  let seed=11;const r=()=>(seed=seed*16807%2147483647)/2147483647;
+  for(let i=0;i<70;i++){s+=`<circle class="flake" cx="${(r()*1200).toFixed(0)}" cy="${(r()*300-300).toFixed(0)}" r="${(1.5+r()*3).toFixed(1)}" fill="#fff" opacity="${(.5+r()*.5).toFixed(2)}" style="animation-duration:${(6+r()*8).toFixed(1)}s;animation-delay:-${(r()*10).toFixed(1)}s"/>`;}
+  $('scene').innerHTML=s;
+}
+
+/* itinerary — [time, title, detail, flag] */
+const DAYS=[
+ {d:'1/11 월',p:'입국 · 상봉',items:[
+   ['13:15~16:00','현주님 팀 2명 국내선 도착','짐을 보관한 뒤 국내선 3층 홋카이도 라멘 도장에서 점심, 디저트 가게 거리 구경.'],
+   ['16:00~17:00','가족 5명 국제선 도착','국제선 1층 입국장에서 만나요. 국내선과 국제선은 연결 통로로 걸어서 이동할 수 있어요.'],
+   ['17:00~18:15','공항 → 스스키노 숙소 체크인','공항 리무진 버스는 스스키노까지 약 1시간. JR이면 삿포로역에서 지하철로 갈아타요.'],
+   ['18:30~','니카 간판 사진 · 스스키노·다누키코지 산책과 저녁','스스키노 교차로의 위스키 광고판 앞에서 단체 사진.']],
+  tip:['두 팀 중 한 사람이 단체 대화방에 “입국장 도착”을 남기기로 정해 두세요.','일본은 이날 공휴일(성인의 날)이라 공항이 붐빌 수 있어요.']},
+ {d:'1/12 화',p:'비에이 투어',items:[
+   ['07:30~','편의점 조식 후 삿포로역 투어 집결지로','집결 장소와 시간은 투어 바우처를 한 번 더 확인하세요.'],
+   ['08:00~18:30','비에이 일일 버스 투어','크리스마스트리 나무, 흰수염폭포, 닝구르 테라스 등. 버스 안에서 오래 있어요.','비에이·후라노 내륙은 삿포로보다 훨씬 추워요. 영하 10℃ 아래로 내려갈 수 있으니 가장 두꺼운 옷차림으로.'],
+   ['19:00~','삿포로 복귀 후 저녁 → 숙소 대욕장과 핀란드식 사우나','종일 버스에서 굳은 몸 풀기.']],
+  tip:['멀미하는 아이는 출발 전에 멀미약을 먹이고 앞쪽 좌석으로.','휴게소가 많지 않아요. 간식, 물, 보조 배터리를 챙기세요.']},
+ {d:'1/13 수',p:'삿포로 시내',items:[
+   ['10:00~','니조 시장 해산물 덮밥','아이들은 연어나 계란 위주로, 구운 가리비와 멜론도 있어요.'],
+   ['13:00~','삿포로역 · 다이마루 백화점 쇼핑, 포켓몬센터','삿포로역과 붙어 있어 춥지 않아요.'],
+   ['17:00~','오도리 공원 쪽 일루미네이션 산책과 저녁','저녁은 수프카레나 징기스칸.','오도리 공원 행사장 일루미네이션은 12/25에 끝나요. 1월엔 오도리 바로 옆 역 앞 거리(삿포로역~스스키노)와 남1조 거리, 아카프라에 불이 켜지니 그쪽으로 걸으세요.']],
+  tip:['삿포로역~오도리~스스키노는 지하 보행로로 이어져 있어요.','징기스칸·수프카레 인기 가게는 인원이 많으면 예약하세요.']},
+ {d:'1/14 목',p:'오타루',items:[
+   ['10:30~','삿포로역 → 오타루역','JR로 약 35~45분. 진행 방향 오른쪽에 앉으면 바다 설경이 보여요.'],
+   ['12:00~','오타루 초밥·해산물 덮밥 점심 → 사카이마치 거리','오르골당, 르타오 등 디저트 가게 거리.'],
+   ['17:00~','오타루 운하 야경 후 삿포로 복귀','해 지면 가스등이 켜져요.','눈빛거리 축제는 2/6부터라 이번엔 없어요. 운하 가스등 야경은 볼 수 있어요.']],
+  tip:['언덕길과 계단이 미끄러워요. 아이 손은 꼭 잡고.','오르골당 안은 깨지는 물건이 많아요. 가방은 앞으로 메세요.']},
+ {d:'1/15 금',p:'노보리베츠',items:[
+   ['11:00~','숙소 체크아웃 → 삿포로 시내 점심',''],
+   ['13:30~','노보리베츠로 이동','료칸 송영버스 또는 도난버스 고속버스 ‘온센호’. 약 1시간 40분.','송영버스는 대부분 예약제예요. 인원과 짐 개수를 미리 알려 두세요.'],
+   ['16:00~','료칸 체크인 → 유황 온천, 가이세키·뷔페 석식','저녁 전 노천탕에서 눈 맞으며 온천.']],
+  tip:['짐이 많으면 숙소에서 료칸으로 짐만 택배로 보내는 방법도 있어요.','온천 수건과 유카타는 료칸에 있어요.']},
+ {d:'1/16 토',p:'귀국',items:[
+   ['08:40~09:00','료칸 조식 후 체크아웃, 짐 보관',''],
+   ['09:00~10:15','지옥계곡 → 곰 목장','지옥계곡은 무료에 언제든 볼 수 있으니 먼저 둘러보고, 곰 목장은 문 여는 시각에 맞춰 가세요.','겨울(10/21~4/20) 곰 목장은 9:30에 문을 열어요. 9:00엔 아직 닫혀 있으니 지옥계곡을 먼저 보세요. 로프웨이 왕복 시간도 생각해 두세요.'],
+   ['10:30~11:33','짐 찾아서 신치토세 공항 직행 고속버스','도난버스 노보리베츠 온천 ↔ 신치토세 공항 노선.','대설이면 늦어질 수 있어요. 비행기 시간과 여유를 다시 확인하세요.'],
+   ['14:30','출국 수속 · 면세점 쇼핑 후 귀국','']],
+  tip:['곰 목장 입장료에 로프웨이가 포함돼 있어요.','과자 선물은 공항에서 한 번에 사도 돼요.']}
+];
+let di=0;
+const renderDay=()=>{
+  $('route').innerHTML=DAYS.map((d,i)=>`<button class="stop" role="tab" id="st${i}" data-i="${i}" aria-selected="${i===di}"><span class="dot">${i+1}</span><span><b>${d.p}</b><small>${d.d}</small></span></button>`).join('');
+  const d=DAYS[di];
+  $('day').innerHTML=`<ol class="sched">${d.items.map(x=>`<li><span class="t" style="font-size:18px">${x[0]}</span><div><b>${x[1]}</b>${x[2]?`<p>${x[2]}</p>`:''}${x[3]?`<span class="flag">${x[3]}</span>`:''}</div></li>`).join('')}</ol>
+  <div class="side"><h3>${di+1}일차 · ${d.d}</h3><ul>${d.tip.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;
+};
+$('route').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b){di=+b.dataset.i;renderDay();}});
+$('route').addEventListener('keydown',e=>{if(['ArrowRight','ArrowLeft','ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();di=(di+(e.key==='ArrowRight'||e.key==='ArrowDown'?1:DAYS.length-1))%DAYS.length;renderDay();$('st'+di).focus();}});
+renderDay();
+
+/* calendar Jan 9–18 */
+const D0=9,N=10,wk=['일','월','화','수','목','금','토'];
+$('dnums').innerHTML=Array.from({length:N},(_,i)=>{const day=D0+i,w=new Date(2027,0,day).getDay(),trip=day>=11&&day<=16;return`<span class="${trip?'trip':''} ${w===0||w===6||day===11?'we':''}">${day}<small>${wk[w]}</small></span>`}).join('');
+const EV=[['역 앞 거리·남1조·아카프라','일루미네이션 16:30~22:00',9,18,'#c79a00','매일 저녁'],['나카지마 공원 일루미네이션','1/9~1/28 (스스키노 남쪽)',9,18,'#d97706','숙소에서 가까워요'],['노보리베츠 곰 목장','겨울 9:30~16:30',9,18,'#6b4f3a','영업 중'],['삿포로 국제예술제','SIAF 2027 개막',16,18,'#7a52c7','1/16~']];
+$('rows').innerHTML=EV.map(e=>{const l=(e[2]-D0)/N*100,w=(e[3]-e[2]+1)/N*100;return`<div class="row"><div class="nm">${e[0]}<small>${e[1]}</small></div><div class="track"><span class="win"></span><i style="left:${l}%;width:${w}%;background:${e[4]}">${e[5]}</i></div></div>`}).join('');
+
+/* cost: [item, adultFare, childFare] per person */
+const COST=[['공항 → 스스키노 리무진 버스 (편도)',1500,750,'약'],['JR 삿포로 ↔ 오타루 (왕복)',0,0,'역에서 확인'],['노보리베츠 곰 목장 (로프웨이 포함)',3000,1500,'']];
+const fmt=n=>n.toLocaleString('ko-KR');
+const calc=()=>{
+  const a=Math.max(0,+$('nA').value||0),c=Math.max(0,+$('nC').value||0);let sum=0;
+  $('costRows').innerHTML=COST.map(x=>{if(!x[1])return`<tr><td>${x[0]}</td><td class="n" colspan="3">${x[3]}</td></tr>`;const t=a*x[1]+c*x[2];sum+=t;return`<tr><td>${x[0]}${x[3]?' · '+x[3]:''}</td><td class="n">${fmt(x[1])}</td><td class="n">${fmt(x[2])}</td><td class="n">${fmt(t)}</td></tr>`}).join('');
+  $('costSum').textContent=fmt(sum)+'엔';
+};
+$('nA').addEventListener('input',calc);$('nC').addEventListener('input',calc);calc();
+
+const FAM=[['공항 상봉 약속 정하기','국내선 팀이 먼저 도착해요. 만날 곳(국제선 1층 입국장 출구)과 연락 방법을 미리 정해 두세요.'],['택시는 2대','일반 택시는 4명까지 타요. 짐이 많은 날은 9인승 점보택시를 예약하면 한 번에 움직일 수 있어요.'],['식당은 미리 예약','징기스칸, 수프카레, 게 요리 인기 가게는 인원이 많으면 금방 차요.'],['투어 바우처 한곳에','비에이 투어, 료칸, 고속버스 예약 확인서를 단체 대화방에 모아 두세요.'],['역할 나누기','길 안내·돈 관리·아이 담당을 어른끼리 나누면 이동이 빨라져요. 중학생에게 지도 앱 길 찾기를 맡겨 보세요.'],['아이 연락 카드','초등학생 주머니에 숙소 이름·주소와 보호자 번호를 일본어로 적은 카드를 넣어 주세요.']];
+$('famCards').innerHTML=FAM.map(f=>`<div><b>${f[0]}</b><small>${f[1]}</small></div>`).join('');
+
+const FOOD=[['공항 라멘 도장','1일차 점심. 홋카이도 각지 라멘 가게가 한 층에.'],['니조 시장 해산물 덮밥','3일차 아침. 연어알, 게살, 성게.'],['수프카레','삿포로가 원조. 맵기 0단계도 있어요.'],['징기스칸','양고기 철판구이. 외투는 비닐봉지에.'],['오타루 초밥','4일차 점심. 초밥 거리에 가게가 모여 있어요.'],['르타오 치즈케이크','오타루 사카이마치 거리 디저트.'],['료칸 가이세키','5일차 저녁. 아이 메뉴가 있는지 예약 때 확인.'],['공항 과자 쇼핑','마지막 날 선물은 공항에서 한 번에.']];
+$('foodCards').innerHTML=FOOD.map(f=>`<div><span class="big">${f[0]}</span><br><small>${f[1]}</small></div>`).join('');
+
+const PACK={
+ '공통':['여권 (유효기간 확인)','여행자 보험','교통카드 · 현금 엔화','투어·료칸·버스 예약 확인서','보조 배터리 (추우면 금방 방전)','상비약 (멀미약·해열제·감기약)'],
+ '어른':['롱패딩이나 방풍 외투','발열 내의 위아래','미끄럼 방지 방한화','니트 모자 · 목도리 · 장갑','핫팩 넉넉히 (비에이 날 특히)'],
+ '중학생':['방수 외투 · 방한화','휴대폰 지도 앱 · 번역 앱','귀마개','사우나·온천용 작은 파우치'],
+ '초등학생':['방수 장갑 + 여벌 장갑','두꺼운 양말 여러 켤레','넥워머 · 귀까지 덮는 모자','버스 투어용 간식 · 물','연락 카드 (숙소·보호자 번호)','선글라스 (눈 반사)']
+};
+const keys=Object.keys(PACK);let pk=keys[0],done={};
+try{done=JSON.parse(localStorage.getItem('spk7-pack')||'{}')||{}}catch(e){done={}}
+const save=()=>{try{localStorage.setItem('spk7-pack',JSON.stringify(done))}catch(e){}};
+const total=()=>keys.reduce((a,k)=>a+PACK[k].length,0),got=()=>keys.reduce((a,k)=>a+(done[k]||[]).length,0);
+const renderPack=()=>{
+  $('ptabs').innerHTML=keys.map(k=>`<button class="ptab" role="tab" data-k="${k}" aria-selected="${k===pk}">${k} ${(done[k]||[]).length}/${PACK[k].length}</button>`).join('');
+  const d=done[pk]||[];
+  $('chk').innerHTML=PACK[pk].map((p,i)=>`<li><label><input type="checkbox" id="pk-${keys.indexOf(pk)}-${i}" data-i="${i}" ${d.includes(i)?'checked':''}><span>${p}</span></label></li>`).join('');
+  $('bar').style.width=(got()/total()*100)+'%';$('cnt').textContent=`전체 ${got()} / ${total()}`;
+};
+$('ptabs').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b){pk=b.dataset.k;renderPack();}});
+$('chk').addEventListener('change',e=>{const i=+e.target.dataset.i,d=done[pk]||[];done[pk]=e.target.checked?[...d,i]:d.filter(x=>x!==i);save();renderPack();});
+renderPack();
+
+const SAFE=[['펭귄처럼 걷기','보폭은 좁게, 발바닥 전체로. 인도의 모래 상자 모래는 뿌려도 돼요.'],['처마 밑은 피해서','지붕의 눈덩이와 고드름이 떨어져요.'],['인원 확인 습관','버스·지하철 타고 내릴 때마다 인원을 세어 보세요.'],['지옥계곡 산책로','나무 데크가 얼어 있어요. 난간 쪽으로 천천히, 아이는 손 잡고.'],['온천 후 체온 관리','노천탕에서 나오면 머리를 바로 말리고 따뜻하게 입으세요.'],['마지막 날은 여유 있게','대설로 버스·항공편이 늦어지는 날이 있어요.']];
+$('safeCards').innerHTML=SAFE.map(f=>`<div><b>${f[0]}</b><small>${f[1]}</small></div>`).join('');
+}
+</script>
+</body>
+</html>
